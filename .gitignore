@@ -1,3 +1,8 @@
-sheet_secret.json
-sheet_config.json
 node_modules
+.env
+sheet_config.json
+sheet_secret.json
+
+#Hardhat files
+cache
+artifacts

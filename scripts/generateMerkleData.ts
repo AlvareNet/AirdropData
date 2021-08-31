@@ -10,6 +10,7 @@ import * as creds from '../sheet_secret.json';
 import * as sheetconfig from '../sheet_config.json';
 const chunkfilename = "chunk";
 const mappingfilename = "mappings"
+const contractsettings = "settings"
 const fileending = ".json";
 const path = "./output/"
 const chunksize = 100
@@ -62,7 +63,7 @@ async function GenerateProofs(){
 
         var index = 0;
         var filecounter = 0;
-
+        var total = BigNumber.from("0");
         var mappingobject = <{start: string, stop: string, file: string}[]>[]
         while(index < data.length){
             var tmpcounter = 0;
@@ -70,7 +71,9 @@ async function GenerateProofs(){
             var tmpobject = <{ [key: string]: {index: number, amount: string, proof: string[]}}>{}
             while(tmpcounter < chunksize && (tmpcounter + index) < data.length){
                 var pos = index + tmpcounter;
-                tmpobject[data[pos].address] = {index: pos, amount: utils.parseUnits(data[pos].amount, 9).toHexString(), proof: tree.getHexProof(leaves[pos])}
+                var tmpamount = utils.parseUnits(data[pos].amount, 9);
+                total.add(tmpamount);
+                tmpobject[data[pos].address] = {index: pos, amount: tmpamount.toHexString(), proof: tree.getHexProof(leaves[pos])}
                 tmpcounter++;
             }
             index += tmpcounter;
@@ -82,9 +85,10 @@ async function GenerateProofs(){
             }
             filecounter++;
         }
-
+        var contractvariables = { merkleroot: root, total: total.toString()}
         try {
             fs.writeFileSync(path +  mappingfilename + fileending, JSON.stringify(mappingobject))
+            fs.writeFileSync(path +  contractsettings + fileending, JSON.stringify(contractvariables))
         } catch (error) {
             console.log(error)
         }

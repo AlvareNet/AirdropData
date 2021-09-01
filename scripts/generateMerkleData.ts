@@ -72,7 +72,7 @@ async function GenerateProofs(){
             while(tmpcounter < chunksize && (tmpcounter + index) < data.length){
                 var pos = index + tmpcounter;
                 var tmpamount = utils.parseUnits(data[pos].amount, 9);
-                total.add(tmpamount);
+                total = total.add(tmpamount);
                 tmpobject[data[pos].address] = {index: pos, amount: tmpamount.toHexString(), proof: tree.getHexProof(leaves[pos])}
                 tmpcounter++;
             }

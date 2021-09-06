@@ -2,7 +2,6 @@ import { GoogleSpreadsheet } from "google-spreadsheet";
 import { MerkleTree } from "merkletreejs";
 import { keccak_256 } from 'js-sha3';
 import { BigNumber, utils } from "ethers";
-import { Int, string } from "io-ts";
 import * as fs from 'fs'
 import { Console } from "console";
 
@@ -12,7 +11,7 @@ const chunkfilename = "chunk";
 const mappingfilename = "mappings"
 const contractsettings = "settings"
 const fileending = ".json";
-const path = "./output/"
+const path = "./output/slothi/"
 const chunksize = 100
 
 function sortData(a: { address: string; amount: string; }, b: { address: string; amount: string; }): number {
@@ -24,7 +23,6 @@ function sortData(a: { address: string; amount: string; }, b: { address: string;
       }
       return 0;
 }
-interface chunkdata { [key: string]: {index: number, amount: string}};
 
 async function getData(): Promise< { address: string; amount: string; }[]> {
     try{
@@ -37,8 +35,8 @@ async function getData(): Promise< { address: string; amount: string; }[]> {
         console.log("Getting rows");
         var rows = await sheet.getRows();
         var rows2 = <{address: string, amount: string}[]>[];
-        rows.forEach((row) => {
-            if(row.HolderAddress.length > 0 && row.HolderAddress != "" && !row.Finalbalance.includes("-") && row.Finalbalance != "0" && row.Finalbalance.length > 0){
+        rows.forEach((row, index) => {
+            if(row.HolderAddress && row.HolderAddress.length > 0 && row.HolderAddress != "" && row.Finalbalance && row.Finalbalance.length > 0 && !row.Finalbalance.includes("-") && row.Finalbalance != "0"){
                 rows2.push({ address: row.HolderAddress, amount: row.Finalbalance })
             }
         });

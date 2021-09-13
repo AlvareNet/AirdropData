@@ -62,8 +62,8 @@ function getData() {
             console.log("Getting rows");
             var rows = yield sheet.getRows();
             var rows2 = [];
-            rows.forEach((row) => {
-                if (row.HolderAddress.length > 0 && row.HolderAddress != "" && !row.Finalbalance.includes("-") && row.Finalbalance != "0" && row.Finalbalance.length > 0) {
+            rows.forEach((row, index) => {
+                if (row.HolderAddress && row.HolderAddress.length > 0 && row.HolderAddress != "" && row.Finalbalance && row.Finalbalance.length > 0 && !row.Finalbalance.includes("-") && row.Finalbalance != "0") {
                     rows2.push({ address: row.HolderAddress, amount: row.Finalbalance });
                 }
             });
@@ -82,7 +82,7 @@ function GenerateProofs() {
             data.sort(sortData);
             var leaves = [];
             data.forEach((row, pos) => {
-                leaves.push(Buffer.from(ethers_1.utils.solidityKeccak256(['uint256', 'address', 'uint256'], [pos, row.address, ethers_1.utils.parseUnits(row.amount, 9)]).substr(2), 'hex'));
+                leaves.push(Buffer.from(ethers_1.utils.solidityKeccak256(['uint256', 'address', 'uint256'], [pos, row.address, ethers_1.utils.parseUnits(row.amount, 9).toHexString()]).substr(2), 'hex'));
             });
             const tree = new merkletreejs_1.MerkleTree(leaves, js_sha3_1.keccak_256);
             const root = tree.getHexRoot();
@@ -120,6 +120,10 @@ function GenerateProofs() {
                 console.log(error);
             }
             console.log("Wrote " + (filecounter - 1).toString() + " chunks");
+            console.log("Testing proofs");
+            var test = { data: [10000, "0xfda1666ff451eef866b3dd6b4d904a391ed91f2a", "0x238c6c609afe80"], "proof": ["0xf4be6bd8bc81c9c6c155e0eab7d4355c7b6c9d03c24a67c7f9166d42c75636a6", "0x9ab412a02fec01569c3430c665a0615c69cf6af34642158f2a6a9b068e058e06", "0xb4d2b2f908d84923ef5f18c1bec7a96b892f5106bcb29a5865936812778f2bbf", "0xab7ecb0d7cd314a135f618f2807f1624ce16e5704693ce8844e530dc719cc96e", "0xd4d210d945f0be022615c55784949b92b4bbd04898d542bd94e2ce41774374ca", "0xb0e93bc159e8b5bde3880ec185978b0494c1fe9d95167ea4dd636a85010d9537", "0xa28d9d83f249ffc175fdd407d1af75a1578f911482743bca933d5a002f750f2b", "0xe22fa97c388abf743ea60fac7f408b6fc9c1e9d5e8a4e7f4c80967bf31c33027", "0xdae616e89370dac59bb7f811cd60b72cd756869809291a6ed36bc57097537b00", "0xc2b81458ab3e7565426f49252b8fe95e6f7f8135d8a7df58e074d457ec566e4a", "0x0c9dab9def3d3045183f369384cf0ee1291dbb361d749f5d568adf6ba7f77911"] };
+            var testleave = Buffer.from(ethers_1.utils.solidityKeccak256(['uint256', 'address', 'uint256'], test.data).substr(2), 'hex');
+            console.log(tree.verify(test.proof, testleave, root));
         }
         catch (error) {
             console.log(error);

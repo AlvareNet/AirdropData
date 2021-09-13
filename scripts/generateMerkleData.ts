@@ -54,9 +54,15 @@ async function GenerateProofs(){
         data.sort(sortData)
         var leaves = <Buffer[]>[];
         data.forEach((row, pos) => {
-            leaves.push(Buffer.from(utils.solidityKeccak256(['uint256', 'address', 'uint256'], [pos, row.address, utils.parseUnits(row.amount, 9)]).substr(2),'hex'));
+            leaves.push(Buffer.from(utils.solidityKeccak256(['uint256', 'address', 'uint256'], [pos, row.address, utils.parseUnits(row.amount, 9).toHexString()]).substr(2),'hex'));
+            if(pos == 10000){
+                console.log(utils.parseUnits(row.amount, 9).toHexString())
+                console.log(pos)
+                console.log(row.address)
+            }
         })
-        const tree = new MerkleTree(leaves, keccak_256);
+        console.log(leaves[0])
+        const tree = new MerkleTree(leaves, keccak_256, {sortPairs: true});
         const root = tree.getHexRoot();
 
         var index = 0;
@@ -71,7 +77,7 @@ async function GenerateProofs(){
                 var pos = index + tmpcounter;
                 var tmpamount = utils.parseUnits(data[pos].amount, 9);
                 total = total.add(tmpamount);
-                tmpobject[data[pos].address] = {index: pos, amount: tmpamount.toHexString(), proof: tree.getHexProof(leaves[pos])}
+                tmpobject[data[pos].address] = {index: pos, amount: tmpamount.toHexString(), proof: tree.getHexProof(leaves[pos], pos)}
                 tmpcounter++;
             }
             index += tmpcounter;
@@ -90,8 +96,6 @@ async function GenerateProofs(){
         } catch (error) {
             console.log(error)
         }
-        console.log("Wrote " + (filecounter-1).toString() + " chunks")
-
     }
     catch(error){
         console.log(error)

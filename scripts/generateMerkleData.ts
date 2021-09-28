@@ -13,8 +13,8 @@ const contractsettings = "settings"
 const fileending = ".json";
 const path = "./output/"
 const chunksize = 50
-const slth = "0x5B9dbeBbad94b8C6467Af9e8A851Bb120F9601c6"
-const sama = "0xb255cddf7fbaf1cbcc57d16fe2eaffffdbf5a8be"
+const slth = "0x0540EA525eA4E38Ed629F706F2724BaFf86eA47b"
+const sama = "0xa600208eE2E0aD1b7A1f9E04e634b6B93fB1bE7e"
 
 function mapSheet(rows: GoogleSpreadsheetRow[], 
     dataobject :{ [address: string]: {contract: string; amount: string;}[] }, 

@@ -6,13 +6,16 @@
   "author": "leonardmgh <leonard@hansen-net.eu>",
   "license": "MIT",
   "dependencies": {
+    "@1inch/multicall": "^1.0.3",
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
     "@typechain/ethers-v5": "^7.0.1",
     "@types/google-spreadsheet": "^3.1.5",
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.7.6",
+    "ethcall": "^4.0.11",
     "ethereum-waffle": "^3.4.0",
+    "ethers": "^5.4.7",
     "google-spreadsheet": "^3.1.15",
     "hardhat": "^2.6.1",
     "js-sha3": "^0.8.0",
@@ -20,6 +23,7 @@
     "ts-generator": "^0.1.1",
     "ts-node": "^10.2.1",
     "typechain": "^5.1.2",
-    "typescript": "^4.4.2"
+    "typescript": "^4.4.2",
+    "web3": "2.0.0-alpha.1"
   }
 }
